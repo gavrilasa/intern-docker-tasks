@@ -10,11 +10,5 @@ const app = new Elysia()
 	.use(openapi())
 	.use(betterAuthPlugin)
 	.use(productModule)
-	.use(cartModule);
-.listen(3000);
-
-// console.log(
-// 	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-// );
-
-export default app;
+	.use(cartModule)
+	.listen(3000);
