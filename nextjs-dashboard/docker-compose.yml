@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  next_app:
+    container_name: nextjs_dashboard_app
+    build: .
+    restart: always
+    ports:
+      - "30200:3000" # Mapping Port 30200 (Publik) -> 3000 (Container)
+    env_file:
+      - .env
+    environment:
+      # Koneksi internal ke service db di bawah
+      - POSTGRES_URL=postgresql://${DB_USER}:${DB_PASSWORD}@next_db:5432/${DB_NAME}
+    depends_on:
+      - next_db
+    networks:
+      - nextjs_net
+
+  next_db:
+    image: postgres:15-alpine
+    container_name: nextjs_dashboard_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pgdata_nextjs:/var/lib/postgresql/data
+    networks:
+      - nextjs_net
+
+networks:
+  nextjs_net:
+    driver: bridge
+
+volumes:
+  pgdata_nextjs:
